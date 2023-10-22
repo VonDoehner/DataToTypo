@@ -5,14 +5,13 @@ from ftplib import FTP_TLS
 x = "www.feg-hochdorf.ch"
 y = "fegch_4"
 z = "N1Us3kU97x"
-u = '/Users/silvanzechner/Desktop/Predigtuploader/LOGO_Petrol_weiss.mp4'
-
+u = '/Users/silva/Desktop/Predigtuploader/LOGO_Petrol_weiss.mp4'
 
 
 
 class DataToTypo:
 
-    def FTP(server_address, ftp_user, ftp_pw, ftpDirectory="Predigten"):
+    def FTP(server_address, ftp_user, ftp_pw, filePath, ftpDirectory="Predigten"):
         
         # Create an FTP_TLS connection
         ftp = FTP_TLS(server_address)
@@ -22,19 +21,24 @@ class DataToTypo:
         ftp.prot_p()
 
         # List files in the remote directory
-        hageri = ftp.retrlines('NLST')
-        print(hageri)
+        ListOfDirectories = ftp.retrlines('NLST')
+        print(type(ListOfDirectories))
+        print(ListOfDirectories)
 
         # Change to the remote directory where you want to upload the file
         remote_directory = 'Predigten'
         ftp.cwd(remote_directory)
 
+        #Create the filename from the filepath
+        fileName = filePath.split("/")[-1]
+        print(fileName)
+
         # Upload a file in binary mode
-        with open(u, 'rb') as local_file:
-            ftp.storbinary('STOR r_file.txtemote', local_file)
+        with open(filePath, 'rb') as local_file:
+            ftp.storbinary(f'STOR {fileName}', local_file)
 
         ftp.quit()
 
 
 
-DataToTypo.FTP(x, y, z)
+DataToTypo.FTP(x, y, z, u)
